@@ -25,9 +25,7 @@ function Worker(health) {
 function JuniorEngineer(health, intelligence) {
   this._super(health); // _super는 부모클래스(Worker)의 생성자를 가리키는 것으로 보임
   this._intelligence = intelligence ?? 1;
-  if (this._intelligence > 10) {
-    this._isBornGenius = true;
-  }
+  this._isBornGenius = this._intelligence > 10;
 }
 //- 생성자 함수는 수정하지 마세요
 
