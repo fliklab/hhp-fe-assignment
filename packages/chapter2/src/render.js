@@ -1,11 +1,3 @@
-// jsx("div", null, "div의 children 입니다.");
-//
-// {
-//   div: {
-//     props: null,
-//     children: ["div의 children 입니다."],
-//   },
-// }
 export function jsx(type, props, ...children) {
   const result = {};
   result[type] = {
@@ -33,12 +25,20 @@ function updateAttributes(target, newProps, oldProps) {
   //     target에서 해당 속성을 제거
 }
 
-// render($root, jsx("div", null, "div의 children 입니다.")) 했을때
-// expect($root.innerHTML).toBe(`<div>div의 children 입니다.</div>`);
 export function render(parent, newNode, oldNode, index = 0) {
-  const newNodeElement = document.createElement(Object.keys(newNode)[0]);
-  newNodeElement.innerHTML = newNode[Object.keys(newNode)[0]].children[0];
-  parent.appendChild(newNodeElement);
+  Object.keys(newNode).forEach((type) => {
+    const newNodeElement = document.createElement(type);
+    newNodeElement.innerHTML = newNode[type].children[0];
+
+    // props가 있는 경우 추가한다
+    if (newNode[type].props) {
+      Object.keys(newNode[type].props).forEach((propName) => {
+        newNodeElement.setAttribute(propName, newNode[type].props[propName]);
+      });
+    }
+    // parent에 node를 추가한다.
+    parent.appendChild(newNodeElement);
+  });
   // 1. 만약 newNode가 없고 oldNode만 있다면
   //   parent에서 oldNode를 제거
   //   종료
