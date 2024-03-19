@@ -6,9 +6,18 @@ export function jsx(type, props, ...children) {
   };
 }
 
+// jsx를 dom으로 변환
 export function createElement(node) {
-  // jsx를 dom으로 변환
-  return {};
+  const newNodeElement = document.createElement(node.type);
+  newNodeElement.innerHTML = node.children[0];
+
+  // props가 있는 경우 추가한다
+  if (node.props) {
+    Object.keys(node.props).forEach((propName) => {
+      newNodeElement.setAttribute(propName, node.props[propName]);
+    });
+  }
+  return newNodeElement;
 }
 
 function updateAttributes(target, newProps, oldProps) {
@@ -25,16 +34,8 @@ function updateAttributes(target, newProps, oldProps) {
 }
 
 export function render(parent, newNode, oldNode, index = 0) {
-  const newNodeElement = document.createElement(newNode.type);
-  newNodeElement.innerHTML = newNode.children[0];
-
-  // props가 있는 경우 추가한다
-  if (newNode.props) {
-    Object.keys(newNode.props).forEach((propName) => {
-      newNodeElement.setAttribute(propName, newNode.props[propName]);
-    });
-  }
   // parent에 node를 추가한다.
+  const newNodeElement = createElement(newNode);
   parent.appendChild(newNodeElement);
 
   // 1. 만약 newNode가 없고 oldNode만 있다면
