@@ -1,10 +1,9 @@
 export function jsx(type, props, ...children) {
-  const result = {};
-  result[type] = {
+  return {
+    type,
     props,
     children,
   };
-  return result;
 }
 
 export function createElement(node) {
@@ -26,19 +25,18 @@ function updateAttributes(target, newProps, oldProps) {
 }
 
 export function render(parent, newNode, oldNode, index = 0) {
-  Object.keys(newNode).forEach((type) => {
-    const newNodeElement = document.createElement(type);
-    newNodeElement.innerHTML = newNode[type].children[0];
+  const newNodeElement = document.createElement(newNode.type);
+  newNodeElement.innerHTML = newNode.children[0];
 
-    // props가 있는 경우 추가한다
-    if (newNode[type].props) {
-      Object.keys(newNode[type].props).forEach((propName) => {
-        newNodeElement.setAttribute(propName, newNode[type].props[propName]);
-      });
-    }
-    // parent에 node를 추가한다.
-    parent.appendChild(newNodeElement);
-  });
+  // props가 있는 경우 추가한다
+  if (newNode.props) {
+    Object.keys(newNode.props).forEach((propName) => {
+      newNodeElement.setAttribute(propName, newNode.props[propName]);
+    });
+  }
+  // parent에 node를 추가한다.
+  parent.appendChild(newNodeElement);
+
   // 1. 만약 newNode가 없고 oldNode만 있다면
   //   parent에서 oldNode를 제거
   //   종료
