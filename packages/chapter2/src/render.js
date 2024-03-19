@@ -9,7 +9,14 @@ export function jsx(type, props, ...children) {
 // jsx를 dom으로 변환
 export function createElement(node) {
   const newNodeElement = document.createElement(node.type);
-  newNodeElement.innerHTML = node.children[0];
+
+  node.children.forEach((child) => {
+    if (typeof child === "object") {
+      newNodeElement.appendChild(createElement(child));
+    } else {
+      newNodeElement.innerHTML = child;
+    }
+  });
 
   // props가 있는 경우 추가한다
   if (node.props) {
