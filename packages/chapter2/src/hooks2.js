@@ -1,4 +1,4 @@
-export function createHooks(callback) {
+export function createHooks(render) {
   const stateContext = {
     current: 0,
     states: [],
@@ -8,6 +8,21 @@ export function createHooks(callback) {
     current: 0,
     memos: [],
   };
+
+  let animationFrameId = null;
+
+  function animateLastRequestOnly(callback) {
+    // 이전 애니메이션 프레임 요청이 있다면 취소.
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId);
+    }
+
+    // 가장 최근의 애니메이션 프레임 요청을 실행.
+    animationFrameId = requestAnimationFrame(() => {
+      callback();
+      animationFrameId = null;
+    });
+  }
 
   function resetContext() {
     stateContext.current = 0;
@@ -23,7 +38,7 @@ export function createHooks(callback) {
     const setState = newState => {
       if (newState === states[current]) return;
       states[current] = newState;
-      requestAnimationFrame(callback);
+      animateLastRequestOnly(render);
     };
 
     return [states[current], setState];
